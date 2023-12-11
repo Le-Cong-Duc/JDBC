@@ -1,13 +1,19 @@
 package ConnectJDBC;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 
-public class JDBC_3 {
+public class JDBC_5 {
 	public static void main(String[] args) {
+		int id[] = {36,37,38};
+		String[] names = { "Duc", "Duong", "Quan" };
+		float[] math = { 7, 8, 7 };
+		float[] phys = { 8, 9, 8 };
+		float[] chem = { 6, 7, 9 };
 		try {
 
 			Connection conn = null;
@@ -17,29 +23,29 @@ public class JDBC_3 {
 			String password = "18112005";
 
 			conn = DriverManager.getConnection(url, username, password);
+			String sql = "INSERT INTO STUDENTS (id,Name,Math,Phys,Chem,Aver) VALUES (?,?,?,?,?,?)";
+			PreparedStatement pstm = conn.prepareStatement(sql);
 
-			Statement stm = conn.createStatement();
+			for (int i = 0; i < id.length; i++) {
+				pstm.setInt(1, id[i]);
+				pstm.setString(2, names[i]);
+				pstm.setFloat(3, math[i]);  
+				pstm.setFloat(4, phys[i]);
+				pstm.setFloat(5, chem[i]);
+				pstm.setFloat(6, (math[i] + phys[i] + chem[i]) / 3);
 
-			String sql_1 = "INSERT INTO STUDENTS\r\n" + "VALUES(40,'Tai',8,5,9,(8+5+9)/3)";
-
-			stm.executeUpdate(sql_1);
-			System.out.println("da ket noi thanh cong " + sql_1);
+				pstm.executeUpdate();
+			}
 			
-			String sql = "SELECT*FROM STUDENTS";
-
-			ResultSet rs = stm.executeQuery(sql);
+			pstm = conn.prepareStatement("SELECT*FROM STUDENTS");
+			ResultSet rs = pstm.executeQuery();
 
 			ResultSetMetaData rsm = rs.getMetaData();
-
 			int col_num = rsm.getColumnCount();
-
 			for (int i = 1; i <= col_num; i++) {
-
-				System.out.println(rsm.getColumnLabel(i) + " \t");
-				System.out.println("");
+				System.out.println(rsm.getColumnLabel(i) + " ");
 			}
 			while (rs.next()) {
-
 				System.out.println(rs.getInt(1) + " \t");
 				System.out.println("");
 				System.out.println(rs.getString(2) + "\t");
@@ -51,12 +57,14 @@ public class JDBC_3 {
 				System.out.println(rs.getFloat(5) + "\t");
 				System.out.println("");
 				System.out.println(rs.getFloat(6) + "\t");
-
-			}
+				}
+			
+			pstm.close();
 			conn.close();
 
 		} catch (Exception e) {
-			System.out.println("Error");
+			System.out.println(e);
 		}
 	}
+
 }

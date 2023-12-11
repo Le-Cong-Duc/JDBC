@@ -11,7 +11,7 @@ public class JDBC_4 {
 
 			Connection conn = null;
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			String url = "jdbc:sqlserver://DESKTOP-K7HVB4T:1433;databaseName=STUDENT";
+			String url = "jdbc:sqlserver://DESKTOP-K7HVB4T:1433;databaseName=QUANLI";
 			String username = "sa";
 			String password = "18112005";
 
@@ -19,7 +19,7 @@ public class JDBC_4 {
 
 			DatabaseMetaData dbm = conn.getMetaData();
 
-			ResultSet rs = dbm.getTables(null, null, "PERSONS", null);
+			ResultSet rs = dbm.getTables(null, null, "%", null);
 
 			while (rs.next()) {
 				System.out.println(rs.getString(3));
